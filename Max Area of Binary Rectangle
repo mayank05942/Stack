@@ -1,0 +1,97 @@
+Prob : https://leetcode.com/problems/maximal-rectangle/submissions/
+
+Explanation: https://www.youtube.com/watch?v=St0Jf_VmG_g
+
+
+
+Code:
+
+class Solution:
+    def maximalRectangle(self, arr: List[List[str]]) -> int:
+        if len(arr) == 0:
+            return 0
+        import numpy as np
+        dp = []
+        for i in range(len(arr)):
+            dp.append([0]*len(arr[0]))
+        dp[0] = arr[0]
+        #print(dp)
+        for i in range(1,len(arr)):
+            for j in range(len(arr[0])):
+
+                if arr[i][j] == "1":
+
+                    dp[i][j] = int(dp[i-1][j]) + int(arr[i][j])
+        dp = np.array(dp)
+        dp = dp.astype('int32')
+
+
+
+
+
+
+
+        def hist_area(arr):
+            stack = []
+            val = []
+
+            for i in range(len(arr)-1,-1,-1):
+                if len(stack) == 0:
+                    val.append(len(arr))
+                elif len(stack) > 0 and stack[-1][0] < arr[i]:
+                    val.append(stack[-1][1])
+                elif len(stack) > 0 and stack[-1][0] >= arr[i]:
+                    while stack and stack[-1][0] >= arr[i]:
+                        stack.pop()
+
+                    if len(stack) == 0:
+                        val.append(len(arr))
+                    if len(stack) != 0:
+                        val.append(stack[-1][1])
+
+
+                stack.append((arr[i],i))
+            val.reverse()
+            r = val
+
+            def min_left(arr):
+                stack = []
+                val = []
+
+                for i in range(len(arr)):
+                    if len(stack) == 0:
+                        val.append(-1)
+                    elif len(stack) > 0 and stack[-1][0] < arr[i]:
+                        val.append(stack[-1][1])
+                    elif len(stack) > 0 and stack[-1][0] >= arr[i]:
+                        while stack and stack[-1][0] >= arr[i]:
+                            stack.pop()
+
+                        if len(stack) == 0:
+                            val.append(-1)
+                        if len(stack) != 0:
+                            val.append(stack[-1][1])
+
+
+                    stack.append((arr[i],i))
+                return val
+                #val.reverse()
+
+            l = min_left(arr)
+
+            width = []
+            for right,left in zip(r,l):
+                width.append(right-left-1)
+
+            area = []
+
+            for h,w in zip(arr,width):
+                area.append(h*w)
+            return max(area)
+
+        area = []
+        for items in dp:
+            area.append(hist_area(items))
+        
+        return max(area)
+        
