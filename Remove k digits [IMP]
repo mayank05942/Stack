@@ -1,0 +1,43 @@
+Prob: https://leetcode.com/problems/remove-k-digits/
+
+__________________________________________________________________________________________________________________________
+
+Explanation:
+
+Case1: num = 987654321  and k = 3
+             In order to make it smallest number remove 987
+             It can be done by checking the previous number, if it is greater than the current number remove it using stack
+             
+Case2:  num = 123456789 and k = 3
+        In this case there is no number which is greater than the prev number hence remove the last k elements.
+        
+Video Sol:  https://www.youtube.com/watch?v=HXvxIth510g
+
+
+____________________________________________________________________________________________________________________________
+
+Code:
+
+class Solution:
+    def removeKdigits(self, num: str, k: int) -> str:
+        
+        
+        stack = []
+        
+        for i in range(len(num)):
+            while len(stack) > 0 and stack[-1] > num[i] and k > 0:
+                stack.pop()
+                k -= 1
+                
+            stack.append(num[i])
+            
+        
+        while k > 0:  # case in which we have no removed any element or some k is left
+            stack.pop()
+            k = k-1
+                
+        
+        return "".join(stack).lstrip("0") or "0"
+        
+      
+        
