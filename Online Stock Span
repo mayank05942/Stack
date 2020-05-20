@@ -1,50 +1,61 @@
 https://leetcode.com/problems/online-stock-span/
 
+Explanation: https://www.youtube.com/watch?v=hQLpniD_tjs
+
+Code:
+
+class StockSpanner:
+
+    def __init__(self):
+        self.stock = []  # initalize the array in which we will append stock prices
+        
+
+    def next(self, price: int) -> int:
+    
+        span = 1  # how many stocks are lesser than current including itself (min will always be 1)
+        
+        while self.stock and self.stock[-1][0] <= price:    # if top most element of stock is less than current price 
+            span = span + self.stock[-1][1]                 # the we need to increase our span
+            self.stock.pop()                                # since we have updated span we have to remove it from stack
+                                                            # so that we don't count it again
+            
+        self.stock.append((price,span))  # append price and span in stock each time
+        return span
+_____________________________________________________________________________________________________________________________
+Normal Version:
+_______________
 
 Similar to: Largest to left
 
 arr = [10, 4, 5, 90, 120, 80]
+
+
+
 stack = []
-out = []
+ans = []
 
 for i in range(len(arr)):
-
-    if len(stack) == 0:
-        out.append(-1)
-
-
-    elif len(stack) > 0 and stack[-1] > arr[i]:
-        out.append(stack[-1])
-
-    elif len(stack) > 0 and stack[-1] <= arr[i]:
-        # two cases -> if stack is not empty and if stack is empty
-        while stack and stack[-1] <= arr[i]:
-            stack.pop()
-        
-        if len(stack) == 0:
-            out.append(-1)
-
-        if len(stack) != 0:
-            out.append(stack[-1])
-
-            
-    stack.append(arr[i])
-
-#out.reverse()
-
-#print(out)
-lis =[]
-for element in out:
-
-    if element != -1:
-        x = arr.index(element)
-
-        lis.append(x)
-    else:
-        lis.append(-1)
-#print(lis)
-res = []
-for i in range(len(arr)):
-    res.append(i-lis[i])
-print(res)
     
+    
+    if len(stack) == 0:
+        ans.append(-1)
+
+    if len(stack) > 0 and stack[-1][0] > arr[i]:
+        ans.append(stack[-1][1])
+
+    if len(stack) > 0 and stack[-1][0] <= arr[i]:
+        while stack and stack[-1][0] <= arr[i]:
+            stack.pop()
+        if len(stack) == 0:
+            ans.append(-1)
+        if len(stack) != 0:
+            ans.append(stack[-1][1])
+
+    stack.append([arr[i],i])
+res = []
+for i,j in enumerate(ans):
+    res.append(i-j)
+
+
+
+print(res)
